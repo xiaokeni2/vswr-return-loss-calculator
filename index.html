@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VSWR to Return Loss Calculator | RF Tool</title>
+<meta name="description" content="Free online VSWR calculator, return loss calculator and reflection coefficient converter for RF engineering. Convert VSWR, return loss (dB), |Γ| and mismatch loss instantly, with formulas and a conversion table.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "VSWR to Return Loss Calculator",
+  "url": "https://xiaokeni2.github.io/vswr-return-loss-calculator/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "description": "Convert between VSWR, return loss (dB), reflection coefficient and mismatch loss. Free online RF engineering tool by BRIDZA.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "BRIDZA",
+    "url": "https://rf.bridza.com/"
+  }
+}
+</script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --muted: #8b949e;
+    --accent: #58a6ff;
+    --error: #f85149;
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; border-radius: 0; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    padding: 0 16px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header { padding: 20px 0 8px; border-bottom: 1px solid var(--border); }
+  header .brand { color: var(--accent); font-family: var(--mono); font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
+  h1 { font-size: 24px; margin: 12px 0 6px; color: #f0f6fc; }
+  .intro { color: var(--muted); font-size: 15px; margin-bottom: 8px; }
+  main { padding: 20px 0 32px; }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .panel h2 { font-size: 16px; color: var(--accent); margin-bottom: 14px; font-weight: 600; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  .field label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .field input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+    padding: 10px 12px;
+    outline: none;
+  }
+  .field input:focus { border-color: var(--accent); }
+  .field .unit { color: var(--muted); font-size: 12px; font-family: var(--mono); margin-top: 4px; display: block; }
+  .power-row {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 18px;
+    margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border);
+  }
+  .power-row .metric { font-family: var(--mono); font-size: 14px; }
+  .power-row .metric b { color: var(--accent); font-weight: 600; font-size: 16px; }
+  #status { min-height: 20px; margin-top: 12px; font-size: 13px; font-family: var(--mono); color: var(--error); }
+  table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 14px; font-variant-numeric: tabular-nums; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: right; }
+  th { background: #1c2129; color: var(--accent); font-weight: 600; }
+  td:first-child, th:first-child { text-align: left; }
+  .formulas { font-family: var(--mono); font-size: 14px; color: var(--text); }
+  .formulas li { margin: 6px 0 6px 18px; }
+  .note { color: var(--muted); font-size: 13px; margin-top: 14px; }
+  footer { border-top: 1px solid var(--border); padding: 16px 0 28px; font-size: 13px; color: var(--muted); }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">BRIDZA · RF Engineering Tools</div>
+  <h1>VSWR Calculator &amp; Return Loss Calculator</h1>
+  <p class="intro">Convert in any direction between VSWR, return loss (dB), reflection coefficient |Γ| and mismatch loss (dB). Enter a value in any field — the others update instantly.</p>
+</header>
+
+<main>
+  <section class="panel" aria-label="VSWR converter">
+    <h2>Converter</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="vswr">VSWR</label>
+        <input type="number" id="vswr" inputmode="decimal" step="any" min="1" placeholder="e.g. 1.5" autocomplete="off">
+        <span class="unit">ratio, ≥ 1.00</span>
+      </div>
+      <div class="field">
+        <label for="rl">Return Loss</label>
+        <input type="number" id="rl" inputmode="decimal" step="any" min="0" placeholder="e.g. 13.98" autocomplete="off">
+        <span class="unit">dB, ≥ 0</span>
+      </div>
+      <div class="field">
+        <label for="gamma">Reflection Coefficient |Γ|</label>
+        <input type="number" id="gamma" inputmode="decimal" step="any" min="0" max="1" placeholder="e.g. 0.2" autocomplete="off">
+        <span class="unit">0 – 1</span>
+      </div>
+      <div class="field">
+        <label for="ml">Mismatch Loss</label>
+        <input type="number" id="ml" inputmode="decimal" step="any" min="0" placeholder="e.g. 0.177" autocomplete="off">
+        <span class="unit">dB, ≥ 0</span>
+      </div>
+    </div>
+    <div class="power-row">
+      <span class="metric">Reflected power: <b id="refl-power">—</b></span>
+      <span class="metric">|Γ| = <b id="gamma-power">—</b></span>
+    </div>
+    <div id="status" role="alert"></div>
+  </section>
+
+  <section class="panel" aria-label="Reflected power from forward and reverse power">
+    <h2>Reflected Power from Forward / Reverse Power</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="pfwd">Forward Power P<sub>fwd</sub></label>
+        <input type="number" id="pfwd" inputmode="decimal" step="any" min="0" placeholder="e.g. 100" autocomplete="off">
+        <span class="unit">any unit (W, mW, dBm — same unit both fields)</span>
+      </div>
+      <div class="field">
+        <label for="pref">Reflected Power P<sub>ref</sub></label>
+        <input type="number" id="pref" inputmode="decimal" step="any" min="0" placeholder="e.g. 4" autocomplete="off">
+        <span class="unit">same unit as forward power</span>
+      </div>
+    </div>
+    <p class="note">|Γ| = √(P<sub>ref</sub> / P<sub>fwd</sub>). Enter both values to drive the converter above.</p>
+  </section>
+
+  <section class="panel" aria-label="VSWR conversion table">
+    <h2>VSWR Conversion Table</h2>
+    <table>
+      <thead>
+        <tr><th>VSWR</th><th>|Γ|</th><th>Return Loss (dB)</th><th>Mismatch Loss (dB)</th><th>Reflected Power</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1.0</td><td>0.0000</td><td>∞</td><td>0.000</td><td>0.00%</td></tr>
+        <tr><td>1.1</td><td>0.0476</td><td>26.44</td><td>0.010</td><td>0.23%</td></tr>
+        <tr><td>1.2</td><td>0.0909</td><td>20.83</td><td>0.036</td><td>0.83%</td></tr>
+        <tr><td>1.5</td><td>0.2000</td><td>13.98</td><td>0.177</td><td>4.00%</td></tr>
+        <tr><td>2.0</td><td>0.3333</td><td>9.54</td><td>0.512</td><td>11.11%</td></tr>
+        <tr><td>3.0</td><td>0.5000</td><td>6.02</td><td>1.249</td><td>25.00%</td></tr>
+        <tr><td>5.0</td><td>0.6667</td><td>3.52</td><td>2.553</td><td>44.44%</td></tr>
+        <tr><td>10.0</td><td>0.8182</td><td>1.74</td><td>4.807</td><td>66.94%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="panel" aria-label="Formulas">
+    <h2>Formulas</h2>
+    <ul class="formulas">
+      <li>Γ = (VSWR − 1) / (VSWR + 1)</li>
+      <li>Return Loss (dB) = −20·log₁₀(|Γ|)</li>
+      <li>Mismatch Loss (dB) = −10·log₁₀(1 − |Γ|²)</li>
+      <li>VSWR = (1 + |Γ|) / (1 − |Γ|)</li>
+      <li>Reflected power (%) = |Γ|² × 100</li>
+    </ul>
+    <p class="note">Return loss is the ratio of incident to reflected power at a port, expressed in dB. Mismatch loss is the fraction of available power lost due to the impedance mismatch — at VSWR 2.0 about 11% of forward power is reflected and 0.51 dB is lost. This VSWR calculator and return loss calculator runs entirely in your browser; no data leaves your device.</p>
+  </section>
+</main>
+
+<footer>
+  More RF tools: <a href="https://rf.bridza.com/">BRIDZA RF Component Selector</a> · <a href="https://xiaokeni2.github.io/rf-component-selector/">OCXO / TCXO Parametric Search</a>
+</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var f = { vswr: $("vswr"), rl: $("rl"), gamma: $("gamma"), ml: $("ml") };
+  var pfwd = $("pfwd"), pref = $("pref");
+  var reflOut = $("refl-power"), gammaOut = $("gamma-power"), status = $("status");
+
+  function num(s) { var v = parseFloat(s); return isNaN(v) ? null : v; }
+  function fmt(x, d) { return isFinite(x) ? x.toFixed(d) : "\u221E"; }
+  function err(msg) { status.textContent = msg; }
+  function clearErr() { if (status.textContent) status.textContent = ""; }
+
+  function focusedFieldId() {
+    var a = document.activeElement;
+    return (a && (a.id === "vswr" || a.id === "rl" || a.id === "gamma" || a.id === "ml")) ? a.id : null;
+  }
+
+  function fillFromGamma(g) {
+    var skip = focusedFieldId();
+    var vswr = (1 + g) / (1 - g);
+    var rl = g === 0 ? Infinity : -20 * Math.log10(g);
+    var ml = -10 * Math.log10(1 - g * g);
+    var pct = g * g * 100;
+    if (skip !== "vswr") f.vswr.value = fmt(vswr, 3);
+    if (skip !== "rl") f.rl.value = fmt(rl, 3);
+    if (skip !== "gamma") f.gamma.value = fmt(g, 4);
+    if (skip !== "ml") f.ml.value = fmt(ml, 3);
+    reflOut.textContent = pct.toFixed(2) + " %";
+    gammaOut.textContent = fmt(g, 4);
+  }
+
+  function fromVswr() {
+    var v = num(f.vswr.value);
+    if (v === null) return;
+    if (v < 1) { err("VSWR must be \u2265 1.00"); return; }
+    fillFromGamma((v - 1) / (v + 1));
+  }
+  function fromRl() {
+    var r = num(f.rl.value);
+    if (r === null) return;
+    if (r < 0) { err("Return loss must be \u2265 0 dB"); return; }
+    fillFromGamma(Math.pow(10, -r / 20));
+  }
+  function fromGamma() {
+    var g = num(f.gamma.value);
+    if (g === null) return;
+    if (g < 0 || g > 1) { err("|Γ| must be between 0 and 1"); return; }
+    fillFromGamma(g);
+  }
+  function fromMl() {
+    var m = num(f.ml.value);
+    if (m === null) return;
+    if (m < 0) { err("Mismatch loss must be \u2265 0 dB"); return; }
+    fillFromGamma(Math.sqrt(1 - Math.pow(10, -m / 10)));
+  }
+  function fromPower() {
+    var p1 = num(pfwd.value), p2 = num(pref.value);
+    if (p1 === null || p2 === null) return;
+    if (p1 <= 0) { err("Forward power must be > 0"); return; }
+    if (p2 < 0) { err("Reflected power must be \u2265 0"); return; }
+    if (p2 > p1) { err("Reflected power cannot exceed forward power"); return; }
+    fillFromGamma(Math.sqrt(p2 / p1));
+  }
+
+  f.vswr.addEventListener("input", function () { clearErr(); fromVswr(); });
+  f.rl.addEventListener("input", function () { clearErr(); fromRl(); });
+  f.gamma.addEventListener("input", function () { clearErr(); fromGamma(); });
+  f.ml.addEventListener("input", function () { clearErr(); fromMl(); });
+  pfwd.addEventListener("input", function () { clearErr(); fromPower(); });
+  pref.addEventListener("input", function () { clearErr(); fromPower(); });
+})();
+</script>
+</body>
+</html>
